@@ -259,4 +259,5 @@ return [
     'error.bad_request'     => 'Ihre Anfrage konnte nicht verarbeitet werden.',
     'error.session_expired' => 'Ihre Sitzung ist abgelaufen. Bitte versuchen Sie es erneut.',
     'error.generic'         => 'Es ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.',
+    'error.reference'       => 'Falls dies weiterhin auftritt, wenden Sie sich bitte an Ihren Administrator.',
 ];

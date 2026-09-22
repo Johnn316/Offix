@@ -21,7 +21,9 @@ abstract class Controller
         $viewPath = ROOT_PATH . '/app/views/' . str_replace('.', '/', $view) . '.php';
 
         if (!file_exists($viewPath)) {
-            die("View not found: {$viewPath}");
+            // The path is a server detail - log it, show the user nothing.
+            error_log('View not found: ' . $viewPath);
+            $this->abort(500, __('error.generic'));
         }
 
         // Extract data so view files can use $variable directly
@@ -90,12 +92,22 @@ abstract class Controller
     }
 
     /**
-     * Abort with an HTTP status and a simple message.
+     * Abort with an HTTP status and a safe, user-facing message.
+     * $message must be an app string, never exception or driver text.
      */
-    protected function abort(int $code = 404, string $message = 'Not Found'): void
+    protected function abort(int $code = 404, string $message = ''): void
     {
+        while (ob_get_level() > 0) ob_end_clean();
         http_response_code($code);
-        echo "<h1>{$code} — {$message}</h1>";
+
+        if ($this->wantsJson()) {
+            header('Content-Type: application/json');
+            echo json_encode(['error' => $message !== '' ? $message : __('error.generic')]);
+            exit;
+        }
+
+        $message = $message !== '' ? $message : __('error.generic');
+        require ROOT_PATH . '/app/views/shared/error.php';
         exit;
     }
 

@@ -11,6 +11,14 @@ define('ROOT_PATH', dirname(__DIR__));
 define('APP_PATH',  ROOT_PATH . '/app');
 define('BASE_URL',  '');
 
+// Set APP_DEBUG=1 in the environment to see errors on screen while developing.
+// Off by default so stack traces, file paths and SQL never reach a browser.
+define('APP_DEBUG', getenv('APP_DEBUG') === '1');
+
+ini_set('display_errors', APP_DEBUG ? '1' : '0');
+ini_set('log_errors', '1');
+error_reporting(E_ALL);
+
 // ── 2. Session ────────────────────────────────────────────────────────────────
 // Cookie flags are set explicitly rather than inherited from php.ini.
 // 'secure' tracks the actual scheme: forcing it on would stop the cookie being
@@ -53,6 +61,24 @@ spl_autoload_register(function (string $class): void {
 // ── 4. Helpers + Lang ─────────────────────────────────────────────────────────
 require APP_PATH . '/core/helpers.php';
 \App\Core\Lang::boot();
+
+// ── 4b. Last-resort error handling ────────────────────────────────────────────
+// Anything that escapes a controller (a failed query, a bad call) would
+// otherwise render PHP's own trace, which names files, lines and SQL.
+set_exception_handler(function (\Throwable $e): void {
+    error_log('Uncaught ' . get_class($e) . ': ' . $e->getMessage()
+        . ' in ' . $e->getFile() . ':' . $e->getLine());
+    render_error_page(500);
+});
+
+register_shutdown_function(function (): void {
+    $err = error_get_last();
+    if ($err === null || !in_array($err['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR], true)) {
+        return;
+    }
+    error_log('Fatal: ' . $err['message'] . ' in ' . $err['file'] . ':' . $err['line']);
+    render_error_page(500);
+});
 
 // ── 5. Auth guard ─────────────────────────────────────────────────────────────
 $uri = '/' . trim(strtok($_SERVER['REQUEST_URI'], '?'), '/');

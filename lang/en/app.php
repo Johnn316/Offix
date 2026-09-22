@@ -254,9 +254,10 @@ return [
     'flash.deleted'           => 'Record deleted.',
 
     // Errors
-    'error.forbidden'         => 'You do not have permission to access this page.',
-    'error.not_found'         => 'The page you are looking for could not be found.',
-    'error.bad_request'       => 'Your request could not be processed.',
-    'error.session_expired'   => 'Your session expired. Please try again.',
-    'error.generic'           => 'Something went wrong. Please try again.',
+    'error.forbidden'       => 'You do not have permission to access this page.',
+    'error.not_found'       => 'The page you are looking for could not be found.',
+    'error.bad_request'     => 'Your request could not be processed.',
+    'error.session_expired' => 'Your session expired. Please try again.',
+    'error.generic'         => 'Something went wrong. Please try again.',
+    'error.reference'       => 'If this keeps happening, please contact your administrator.',
 ];

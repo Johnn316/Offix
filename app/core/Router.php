@@ -50,6 +50,25 @@ class Router
         require ROOT_PATH . '/app/views/shared/404.php';
     }
 
+    /** Render a generic 500 without exposing class names or paths. */
+    private function fail(): void
+    {
+        while (ob_get_level() > 0) ob_end_clean();
+        http_response_code(500);
+
+        $uri = strtok($_SERVER['REQUEST_URI'] ?? '', '?') ?: '';
+        if (str_starts_with('/' . ltrim($uri, '/'), '/api/')) {
+            header('Content-Type: application/json');
+            echo json_encode(['error' => __('error.generic')]);
+            exit;
+        }
+
+        $code    = 500;
+        $message = __('error.generic');
+        require ROOT_PATH . '/app/views/shared/error.php';
+        exit;
+    }
+
     // ── Internals ─────────────────────────────────────────────────────────────
 
     private function matches(string $pattern, string $uri, array &$params): bool
@@ -73,13 +92,16 @@ class Router
             return;
         }
 
-        // String class name + action
+        // String class name + action. A missing controller or action is a
+        // routing bug: log the detail, show the user a plain error page.
         if (!class_exists($handler)) {
-            die("Controller not found: {$handler}");
+            error_log("Controller not found: {$handler}");
+            $this->fail();
         }
         $controller = new $handler();
         if (!method_exists($controller, $action)) {
-            die("Action not found: {$handler}::{$action}");
+            error_log("Action not found: {$handler}::{$action}");
+            $this->fail();
         }
         call_user_func_array([$controller, $action], $params);
     }

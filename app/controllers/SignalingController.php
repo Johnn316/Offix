@@ -89,7 +89,8 @@ class SignalingController extends Controller
 
             $this->json(['ok' => true, 'ts' => time()]);
         } catch (\Throwable $e) {
-            $this->json(['ok' => false, 'error' => $e->getMessage()]);
+            error_log('snapshot error: ' . $e->getMessage());
+            $this->json(['ok' => false, 'error' => __('error.generic')], 500);
         }
     }
 
@@ -122,7 +123,7 @@ class SignalingController extends Controller
             ]);
         } catch (\Throwable $e) {
             error_log('docState error: ' . $e->getMessage());
-            $this->json(['changed' => false, 'error' => $e->getMessage()]);
+            $this->json(['changed' => false, 'error' => __('error.generic')], 500);
         }
     }
 
@@ -157,7 +158,7 @@ class SignalingController extends Controller
             $this->json(['ok' => true]);
         } catch (\Throwable $e) {
             error_log('heartbeat error: ' . $e->getMessage());
-            $this->json(['ok' => false, 'error' => $e->getMessage()]);
+            $this->json(['ok' => false, 'error' => __('error.generic')], 500);
         }
     }
 }

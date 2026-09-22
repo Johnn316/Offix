@@ -76,3 +76,33 @@ function csrf_verify(): bool
 
     return $expected !== '' && $given !== '' && hash_equals($expected, $given);
 }
+
+/**
+ * Render the generic error page (or JSON for API callers) and stop.
+ * Used by the global exception and shutdown handlers. Never receives or
+ * prints exception text — details go to the error log.
+ */
+function render_error_page(int $code = 500): void
+{
+    if (headers_sent()) {
+        // Output already began; the best we can do is not append a trace.
+        exit;
+    }
+
+    while (ob_get_level() > 0) ob_end_clean();
+    http_response_code($code);
+
+    $uri = strtok($_SERVER['REQUEST_URI'] ?? '', '?') ?: '';
+    $isApi = str_starts_with('/' . ltrim($uri, '/'), '/api/')
+        || str_contains($_SERVER['HTTP_ACCEPT'] ?? '', 'application/json');
+
+    if ($isApi) {
+        header('Content-Type: application/json');
+        echo json_encode(['error' => __('error.generic')]);
+        exit;
+    }
+
+    $message = __('error.generic');
+    require ROOT_PATH . '/app/views/shared/error.php';
+    exit;
+}
