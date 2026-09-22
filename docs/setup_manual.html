@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ThomasCRM — Setup Manual</title>
+<style>
+  /* ── Reset & base ── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 15px; }
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    color: #1e293b;
+    background: #f8fafc;
+    line-height: 1.7;
+  }
+
+  /* ── Layout ── */
+  .page { max-width: 860px; margin: 0 auto; background: #fff; }
+
+  /* ── Cover ── */
+  .cover {
+    background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+    color: #fff;
+    padding: 80px 60px 70px;
+    page-break-after: always;
+  }
+  .cover-label {
+    font-size: .75rem; font-weight: 700; letter-spacing: .12em;
+    text-transform: uppercase; opacity: .7; margin-bottom: 1.5rem;
+  }
+  .cover h1 { font-size: 2.8rem; font-weight: 800; line-height: 1.15; }
+  .cover h1 span { display: block; font-size: 1.1rem; font-weight: 400; opacity: .75; margin-top: .4rem; }
+  .cover-meta {
+    margin-top: 3rem; display: flex; gap: 2.5rem;
+    font-size: .85rem; opacity: .8;
+  }
+  .cover-meta strong { display: block; font-size: .7rem; text-transform: uppercase; letter-spacing: .1em; opacity: .7; }
+
+  /* ── Body content ── */
+  .body { padding: 50px 60px; }
+
+  /* ── TOC ── */
+  .toc { margin-bottom: 3rem; }
+  .toc h2 { font-size: 1rem; text-transform: uppercase; letter-spacing: .1em; color: #64748b; margin-bottom: 1rem; }
+  .toc ol { list-style: none; counter-reset: toc; }
+  .toc ol li { counter-increment: toc; display: flex; align-items: baseline; gap: .5rem; padding: .3rem 0; border-bottom: 1px dotted #e2e8f0; }
+  .toc ol li::before { content: counter(toc) "."; font-weight: 700; color: #3b82f6; min-width: 22px; }
+  .toc ol li a { color: #1e293b; text-decoration: none; flex: 1; }
+  .toc ol li a:hover { color: #3b82f6; }
+  .toc ol li .pg { color: #94a3b8; font-size: .8rem; }
+
+  /* ── Section headings ── */
+  .section { margin-bottom: 3rem; }
+  .section-header {
+    display: flex; align-items: center; gap: .75rem;
+    margin-bottom: 1.25rem; padding-bottom: .6rem;
+    border-bottom: 2px solid #e2e8f0;
+  }
+  .section-num {
+    background: #3b82f6; color: #fff;
+    font-size: .8rem; font-weight: 700;
+    width: 28px; height: 28px; border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  h2 { font-size: 1.25rem; font-weight: 700; color: #1e293b; }
+  h3 { font-size: 1rem; font-weight: 700; color: #1e293b; margin: 1.25rem 0 .5rem; }
+  p { margin-bottom: .85rem; color: #334155; }
+
+  /* ── Steps ── */
+  .steps { list-style: none; counter-reset: step; }
+  .steps li {
+    counter-increment: step;
+    display: flex; gap: 1rem;
+    margin-bottom: 1.1rem;
+    padding-bottom: 1.1rem;
+    border-bottom: 1px solid #f1f5f9;
+  }
+  .steps li:last-child { border-bottom: none; }
+  .steps li::before {
+    content: counter(step);
+    background: #eff6ff; color: #3b82f6;
+    font-weight: 700; font-size: .8rem;
+    min-width: 26px; height: 26px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: 2px;
+  }
+  .steps li .step-body { flex: 1; }
+  .steps li strong { display: block; margin-bottom: .2rem; }
+
+  /* ── Code blocks ── */
+  code {
+    font-family: 'Consolas', 'Courier New', monospace;
+    background: #f1f5f9; color: #0f172a;
+    padding: .15em .45em; border-radius: 4px;
+    font-size: .875em;
+  }
+  pre {
+    background: #0f172a; color: #e2e8f0;
+    padding: 1rem 1.25rem; border-radius: 8px;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: .82rem; line-height: 1.6;
+    overflow-x: auto; margin: .75rem 0 1rem;
+  }
+  pre .comment { color: #64748b; }
+  pre .cmd    { color: #86efac; }
+  pre .val    { color: #fcd34d; }
+
+  /* ── Info / warning boxes ── */
+  .box {
+    border-radius: 8px; padding: .85rem 1.1rem;
+    margin: .85rem 0; font-size: .875rem;
+    display: flex; gap: .75rem; align-items: flex-start;
+  }
+  .box-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: .05rem; }
+  .box-info    { background: #eff6ff; border-left: 3px solid #3b82f6; }
+  .box-warn    { background: #fffbeb; border-left: 3px solid #f59e0b; }
+  .box-success { background: #f0fdf4; border-left: 3px solid #22c55e; }
+  .box-danger  { background: #fff1f2; border-left: 3px solid #ef4444; }
+
+  /* ── Tables ── */
+  table { width: 100%; border-collapse: collapse; margin: .75rem 0 1rem; font-size: .875rem; }
+  th { background: #f8fafc; text-align: left; padding: .6rem .85rem; font-weight: 600; border-bottom: 2px solid #e2e8f0; color: #475569; }
+  td { padding: .55rem .85rem; border-bottom: 1px solid #f1f5f9; vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+
+  /* ── Checklist ── */
+  .checklist { list-style: none; }
+  .checklist li { display: flex; gap: .65rem; align-items: flex-start; padding: .35rem 0; font-size: .9rem; }
+  .checklist li::before { content: "☐"; font-size: 1rem; color: #3b82f6; flex-shrink: 0; }
+
+  /* ── Feature grid ── */
+  .feature-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .85rem; margin: .75rem 0; }
+  .feature-card {
+    border: 1px solid #e2e8f0; border-radius: 8px;
+    padding: .9rem 1rem;
+  }
+  .feature-card h4 { font-size: .875rem; font-weight: 700; margin-bottom: .3rem; color: #1e293b; }
+  .feature-card p { font-size: .8rem; color: #64748b; margin: 0; line-height: 1.5; }
+  .feature-icon { font-size: 1.1rem; margin-bottom: .4rem; }
+
+  /* ── Credential box ── */
+  .cred-box {
+    background: #0f172a; color: #e2e8f0; border-radius: 8px;
+    padding: 1.1rem 1.25rem; font-family: monospace; font-size: .875rem;
+    display: grid; grid-template-columns: auto 1fr; gap: .3rem 1.5rem;
+    margin: .75rem 0;
+  }
+  .cred-box .label { color: #64748b; }
+  .cred-box .val   { color: #86efac; font-weight: 600; }
+
+  /* ── Page break ── */
+  .page-break { page-break-before: always; }
+
+  /* ── Footer ── */
+  .doc-footer {
+    text-align: center; padding: 2rem; border-top: 1px solid #e2e8f0;
+    font-size: .75rem; color: #94a3b8; margin-top: 2rem;
+  }
+
+  /* ── Print ── */
+  @media print {
+    body { background: #fff; font-size: 13px; }
+    .cover { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .box   { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    pre    { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .cred-box { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .section-num { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .steps li::before { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    a { color: inherit; text-decoration: none; }
+  }
+
+  @media screen {
+    .page { box-shadow: 0 0 40px rgba(0,0,0,.1); min-height: 100vh; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- ═══════════════════════════════════════════════════════════════════════ COVER -->
+<div class="cover">
+  <div class="cover-label">Software Documentation</div>
+  <h1>ThomasCRM
+    <span>Setup &amp; Administration Manual</span>
+  </h1>
+  <div class="cover-meta">
+    <div><strong>Version</strong> 1.0</div>
+    <div><strong>Date</strong> June 2026</div>
+    <div><strong>Platform</strong> PHP 8 · MySQL · XAMPP</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════ BODY -->
+<div class="body">
+
+<!-- ── Table of Contents ─────────────────────────────────────────────────── -->
+<div class="toc">
+  <h2>Table of Contents</h2>
+  <ol>
+    <li><a href="#s1">System Requirements</a></li>
+    <li><a href="#s2">Installation</a></li>
+    <li><a href="#s3">Database Setup</a></li>
+    <li><a href="#s4">Starting the Application</a></li>
+    <li><a href="#s5">First Login &amp; Initial Configuration</a></li>
+    <li><a href="#s6">User Management</a></li>
+    <li><a href="#s7">Features Overview</a></li>
+    <li><a href="#s8">Contact Import (CSV / vCard)</a></li>
+    <li><a href="#s9">Troubleshooting</a></li>
+    <li><a href="#s10">File &amp; Directory Structure</a></li>
+  </ol>
+</div>
+
+<!-- ── 1. System Requirements ────────────────────────────────────────────── -->
+<div class="section" id="s1">
+  <div class="section-header">
+    <div class="section-num">1</div>
+    <h2>System Requirements</h2>
+  </div>
+
+  <table>
+    <thead><tr><th>Component</th><th>Minimum</th><th>Recommended</th></tr></thead>
+    <tbody>
+      <tr><td><strong>PHP</strong></td><td>8.0</td><td>8.2 or higher</td></tr>
+      <tr><td><strong>MySQL</strong></td><td>5.7</td><td>8.0 or MariaDB 10.6+</td></tr>
+      <tr><td><strong>Web server</strong></td><td>PHP built-in server</td><td>Apache / Nginx (via XAMPP)</td></tr>
+      <tr><td><strong>PHP extensions</strong></td><td colspan="2">PDO, PDO_MySQL, mbstring, fileinfo, session</td></tr>
+      <tr><td><strong>Operating system</strong></td><td colspan="2">Windows 10+, macOS 12+, Ubuntu 20.04+</td></tr>
+      <tr><td><strong>Browser</strong></td><td colspan="2">Chrome 110+, Firefox 110+, Edge 110+, Safari 16+</td></tr>
+      <tr><td><strong>Disk space</strong></td><td>50 MB</td><td>500 MB (including uploads)</td></tr>
+    </tbody>
+  </table>
+
+  <div class="box box-info">
+    <span class="box-icon">ℹ</span>
+    <div>ThomasCRM requires no Composer, no Node.js, and no build step. It is a pure PHP application with zero external dependencies.</div>
+  </div>
+</div>
+
+<!-- ── 2. Installation ───────────────────────────────────────────────────── -->
+<div class="section page-break" id="s2">
+  <div class="section-header">
+    <div class="section-num">2</div>
+    <h2>Installation</h2>
+  </div>
+
+  <h3>2.1 Install XAMPP</h3>
+  <ol class="steps">
+    <li>
+      <div class="step-body">
+        <strong>Download XAMPP</strong>
+        Go to <code>https://www.apachefriends.org</code> and download the installer for your operating system. Select the version that includes PHP 8.x.
+      </div>
+    </li>
+    <li>
+      <div class="step-body">
+        <strong>Run the installer</strong>
+        Install XAMPP to the default path (<code>C:\xampp</code> on Windows). During installation, ensure <strong>MySQL</strong> and <strong>PHP</strong> are checked.
+      </div>
+    </li>
+    <li>
+      <div class="step-body">
+        <strong>Start services</strong>
+        Open the XAMPP Control Panel and click <strong>Start</strong> next to both <strong>Apache</strong> and <strong>MySQL</strong>. Both status indicators should turn green.
+      </div>
+    </li>
+  </ol>
+
+  <h3>2.2 Copy Application Files</h3>
+  <ol class="steps">
+    <li>
+      <div class="step-body">
+        <strong>Place the application folder</strong>
+        Copy the <code>ThomasCRM</code> folder into your web root:
+        <pre><span class="comment"># Windows (XAMPP)</span>
+C:\xampp\htdocs\ThomasCRM\
+
+<span class="comment"># macOS (XAMPP)</span>
+/Applications/XAMPP/htdocs/ThomasCRM/
+
+<span class="comment"># Linux</span>
+/opt/lampp/htdocs/ThomasCRM/</pre>
+      </div>
+    </li>
+    <li>
+      <div class="step-body">
+        <strong>Verify the structure</strong>
+        The folder must contain at minimum: <code>public/</code>, <code>app/</code>, <code>routes/</code>, <code>config/</code>, <code>lang/</code>, <code>uploads/</code>.
+      </div>
+    </li>
+    <li>
+      <div class="step-body">
+        <strong>Check uploads directory permissions</strong>
+        The <code>uploads/</code> folder must be writable by the web server process. On Linux/macOS:
+        <pre><span class="cmd">chmod -R 775 /opt/lampp/htdocs/ThomasCRM/uploads/</span></pre>
+        On Windows, XAMPP handles this automatically.
+      </div>
+    </li>
+  </ol>
+
+  <h3>2.3 Configure Database Credentials</h3>
+  <p>Open the file <code>config/database.php</code> and update the values to match your environment:</p>
+  <pre><span class="comment">// config/database.php</span>
+return [
+    <span class="val">'host'</span>     => <span class="val">'localhost'</span>,
+    <span class="val">'dbname'</span>   => <span class="val">'thomas_crm'</span>,   <span class="comment">// must match the DB you create in step 3</span>
+    <span class="val">'username'</span> => <span class="val">'root'</span>,
+    <span class="val">'password'</span> => <span class="val">''</span>,              <span class="comment">// set a password in production</span>
+    <span class="val">'charset'</span>  => <span class="val">'utf8mb4'</span>,
+];</pre>
+
+  <div class="box box-warn">
+    <span class="box-icon">⚠</span>
+    <div><strong>Production environments:</strong> Always set a strong MySQL password and update this file accordingly. Never use the default <code>root</code> / empty password on a public server.</div>
+  </div>
+</div>
+
+<!-- ── 3. Database Setup ──────────────────────────────────────────────────── -->
+<div class="section page-break" id="s3">
+  <div class="section-header">
+    <div class="section-num">3</div>
+    <h2>Database Setup</h2>
+  </div>
+
+  <h3>3.1 Create the Database</h3>
+  <ol class="steps">
+    <li>
+      <div class="step-body">
+        <strong>Open phpMyAdmin</strong>
+        Navigate to <code>http://localhost/phpmyadmin</code> in your browser.
+      </div>
+    </li>
+    <li>
+      <div class="step-body">
+        <strong>Create a new database</strong>
+        Click <strong>New</strong> in the left sidebar. Enter the name <code>thomas_crm</code> and set the collation to <code>utf8mb4_unicode_ci</code>. Click <strong>Create</strong>.
+      </div>
+    </li>
+  </ol>
+
+  <h3>3.2 Run the Migration Files</h3>
+  <p>The application includes several SQL migration files that must be run in order. Import each one into phpMyAdmin under the <code>thomas_crm</code> database using <strong>Import → Choose File</strong>, or run them via the MySQL command line.</p>
+
+  <table>
+    <thead><tr><th>File</th><th>Description</th><th>Run order</th></tr></thead>
+    <tbody>
+      <tr><td><code>schema.sql</code></td><td>Core tables: contacts, tasks, projects</td><td>1st</td></tr>
+      <tr><td><code>schema_migration_phase2.sql</code></td><td>Module tables: invoices, invoice_items, it_assets, modules</td><td>2nd</td></tr>
+      <tr><td><code>schema_migration_users.sql</code></td><td>Users table + default admin account</td><td>3rd</td></tr>
+      <tr><td><code>schema_migration_settings.sql</code></td><td>Settings table (key-value pairs, default currencies)</td><td>4th</td></tr>
+    </tbody>
+  </table>
+
+  <h3>3.3 Command-line alternative (Windows)</h3>
+  <p>If you prefer the command line, open PowerShell and run each file in order:</p>
+  <pre><span class="comment"># Run from the ThomasCRM root folder</span>
+<span class="cmd">Get-Content schema.sql | &amp; "C:\xampp\mysql\bin\mysql.exe" -u root thomas_crm</span>
+<span class="cmd">Get-Content schema_migration_phase2.sql | &amp; "C:\xampp\mysql\bin\mysql.exe" -u root thomas_crm</span>
+<span class="cmd">Get-Content schema_migration_users.sql | &amp; "C:\xampp\mysql\bin\mysql.exe" -u root thomas_crm</span>
+<span class="cmd">Get-Content schema_migration_settings.sql | &amp; "C:\xampp\mysql\bin\mysql.exe" -u root thomas_crm</span></pre>
+
+  <div class="box box-success">
+    <span class="box-icon">✓</span>
+    <div>After all migrations are complete, the <code>thomas_crm</code> database should contain these tables: <code>contacts</code>, <code>tasks</code>, <code>projects</code>, <code>invoices</code>, <code>invoice_items</code>, <code>it_assets</code>, <code>modules</code>, <code>users</code>, <code>settings</code>.</div>
+  </div>
+</div>
+
+<!-- ── 4. Starting the Application ──────────────────────────────────────── -->
+<div class="section" id="s4">
+  <div class="section-header">
+    <div class="section-num">4</div>
+    <h2>Starting the Application</h2>
+  </div>
+
+  <h3>Option A — PHP Built-in Server (recommended for local use)</h3>
+  <p>Open PowerShell (Windows) or a terminal (macOS/Linux) and run:</p>
+  <pre><span class="comment"># Windows — PowerShell</span>
+<span class="cmd">Start-Process "C:\xampp\php\php.exe" -ArgumentList "-S localhost:8080 -t C:\xampp\htdocs\ThomasCRM\public"</span>
+
+<span class="comment"># macOS / Linux</span>
+<span class="cmd">php -S localhost:8080 -t /opt/lampp/htdocs/ThomasCRM/public</span></pre>
+  <p>Then open your browser and go to <code>http://localhost:8080</code>.</p>
+
+  <div class="box box-warn">
+    <span class="box-icon">⚠</span>
+    <div>The PHP built-in server must be started <strong>each time</strong> you restart your machine. MySQL must also be running (start it via the XAMPP Control Panel).</div>
+  </div>
+
+  <h3>Option B — Apache via XAMPP</h3>
+  <p>If you have XAMPP's Apache running, the application is accessible at:</p>
+  <pre>http://localhost/ThomasCRM/public/</pre>
+  <p>No additional command is needed — Apache serves the <code>public/</code> folder automatically once MySQL is running.</p>
+</div>
+
+<!-- ── 5. First Login & Initial Configuration ────────────────────────────── -->
+<div class="section page-break" id="s5">
+  <div class="section-header">
+    <div class="section-num">5</div>
+    <h2>First Login &amp; Initial Configuration</h2>
+  </div>
+
+  <h3>5.1 Default Admin Credentials</h3>
+  <p>A default administrator account is created automatically by the migration. Use these credentials for your first login:</p>
+
+  <div class="cred-box">
+    <span class="label">URL</span>      <span class="val">http://localhost:8080/login</span>
+    <span class="label">Email</span>    <span class="val">admin@thomascrm.com</span>
+    <span class="label">Password</span> <span class="val">admin1234</span>
+  </div>
+
+  <div class="box box-danger">
+    <span class="box-icon">🔒</span>
+    <div><strong>Change this password immediately</strong> after your first login. Go to the user avatar (top-right) → <strong>My Settings</strong> → <strong>Change Password</strong>.</div>
+  </div>
+
+  <h3>5.2 Initial Setup Checklist</h3>
+  <p>Complete these steps after your first login:</p>
+  <ul class="checklist">
+    <li>Change the default admin password (My Settings → Change Password)</li>
+    <li>Update the admin name and email address (My Settings → Profile Details)</li>
+    <li>Upload a profile photo (My Settings → Change Photo)</li>
+    <li>Set your preferred language — English or Swiss German (My Settings → Language)</li>
+    <li>Configure active currencies (Settings → General Settings → Currencies)</li>
+    <li>Set a default currency for new invoices (Settings → General Settings → Default Currency)</li>
+    <li>Enable optional modules (Settings → Modules) — Invoicing, IT Planning</li>
+    <li>Create additional user accounts if needed (Settings → Users → New User)</li>
+  </ul>
+
+  <h3>5.3 Configure Currencies</h3>
+  <p>Navigate to <strong>Settings → General Settings</strong>. The currency selector lists 130 international ISO 4217 currencies. Check all currencies your organisation works with. The <strong>Default Currency</strong> will be pre-selected whenever a new invoice is created.</p>
+
+  <h3>5.4 Enable Optional Modules</h3>
+  <p>Navigate to <strong>Settings → Modules</strong>. Click <strong>Enable</strong> next to any module you want to activate. Enabled modules appear in the left sidebar automatically.</p>
+  <table>
+    <thead><tr><th>Module</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Invoicing</strong></td><td>Create and manage invoices with line items, tax, and multi-currency support. Print-ready layout included.</td></tr>
+      <tr><td><strong>IT Planning</strong></td><td>Track IT assets (laptops, servers, phones, etc.) with warranty expiry alerts and assignment tracking.</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ── 6. User Management ─────────────────────────────────────────────────── -->
+<div class="section" id="s6">
+  <div class="section-header">
+    <div class="section-num">6</div>
+    <h2>User Management</h2>
+  </div>
+
+  <p>User management is available to <strong>admin</strong> role accounts only, under <strong>Settings → Users</strong>.</p>
+
+  <h3>Roles</h3>
+  <table>
+    <thead><tr><th>Role</th><th>Access</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Admin</strong></td><td>Full access — all modules, user management, general settings, module settings</td></tr>
+      <tr><td><strong>Manager</strong></td><td>Full access to core modules and optional modules. Cannot manage users or settings.</td></tr>
+      <tr><td><strong>User</strong></td><td>Standard access to all core and enabled modules. Cannot manage users or settings.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Creating a New User</h3>
+  <ol class="steps">
+    <li><div class="step-body"><strong>Go to Settings → Users</strong> and click <strong>New User</strong>.</div></li>
+    <li><div class="step-body"><strong>Fill in the form</strong> — name, email, password, role, and preferred language.</div></li>
+    <li><div class="step-body"><strong>Save.</strong> The new user can log in immediately using the email and password you set.</div></li>
+  </ol>
+
+  <h3>Profile Settings (per user)</h3>
+  <p>Each user can manage their own settings by clicking their avatar in the top-right corner and selecting <strong>My Settings</strong>. They can update their name, email, profile photo, preferred language, and change their own password.</p>
+
+  <div class="box box-info">
+    <span class="box-icon">ℹ</span>
+    <div>The interface language (English / Schweizerdeutsch) is set per user and applied automatically on login. It can be changed at any time in <strong>My Settings</strong>.</div>
+  </div>
+</div>
+
+<!-- ── 7. Features Overview ──────────────────────────────────────────────── -->
+<div class="section page-break" id="s7">
+  <div class="section-header">
+    <div class="section-num">7</div>
+    <h2>Features Overview</h2>
+  </div>
+
+  <div class="feature-grid">
+    <div class="feature-card">
+      <div class="feature-icon">📋</div>
+      <h4>Contacts</h4>
+      <p>Manage your full contact database — name, email, phone, company, address, and notes. Import from Google Contacts (CSV or vCard).</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">✅</div>
+      <h4>Tasks</h4>
+      <p>Create and track tasks with status, priority, and due dates. Link tasks to contacts and projects. Supports recurring tasks (daily, weekly, monthly).</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📁</div>
+      <h4>Task Planner</h4>
+      <p>Grouped task view showing Overdue, Today, Upcoming, and Recurring tasks at a glance.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">💼</div>
+      <h4>Projects</h4>
+      <p>Track projects with status, start/end dates, linked contact, and notes.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🧾</div>
+      <h4>Invoicing <em style="font-weight:400;font-size:.75rem;">(optional)</em></h4>
+      <p>Create professional invoices with dynamic line items, tax rate, multi-currency support, and a print-ready layout.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🖥</div>
+      <h4>IT Planning <em style="font-weight:400;font-size:.75rem;">(optional)</em></h4>
+      <p>Track IT assets with type, serial number, assigned user, location, and warranty expiry. Alerts shown for warranties expiring within 60 days.</p>
+    </div>
+  </div>
+
+  <h3>Navigation</h3>
+  <p>The left sidebar provides access to all modules. The sidebar collapses on smaller screens via the hamburger menu. Admin-only items (Users, General Settings, Modules) appear at the bottom of the sidebar and are only visible to administrator accounts.</p>
+</div>
+
+<!-- ── 8. Contact Import ──────────────────────────────────────────────────── -->
+<div class="section" id="s8">
+  <div class="section-header">
+    <div class="section-num">8</div>
+    <h2>Contact Import (CSV / vCard)</h2>
+  </div>
+
+  <p>ThomasCRM can import contacts directly from <strong>Google Contacts</strong> in two formats. Go to <strong>Contacts → Import</strong>.</p>
+
+  <h3>Option A — Google CSV Export</h3>
+  <ol class="steps">
+    <li><div class="step-body"><strong>Open Google Contacts</strong> at <code>contacts.google.com</code>.</div></li>
+    <li><div class="step-body"><strong>Click Export</strong> (top-right menu). Select <strong>Google CSV</strong> as the format.</div></li>
+    <li><div class="step-body"><strong>Download</strong> the file and upload it on the Import page.</div></li>
+  </ol>
+
+  <h3>Option B — vCard Export (.vcf)</h3>
+  <ol class="steps">
+    <li><div class="step-body"><strong>Open Google Contacts</strong> at <code>contacts.google.com</code>.</div></li>
+    <li><div class="step-body"><strong>Click Export → vCard</strong> (for iOS Contacts) format.</div></li>
+    <li><div class="step-body"><strong>Download</strong> the .vcf file and upload it on the Import page.</div></li>
+  </ol>
+
+  <h3>Import Behaviour</h3>
+  <table>
+    <thead><tr><th>Situation</th><th>Result</th></tr></thead>
+    <tbody>
+      <tr><td>Contact email already exists in the system</td><td>Skipped (no duplicate created)</td></tr>
+      <tr><td>Contact has no name</td><td>Skipped</td></tr>
+      <tr><td>Contact imports successfully</td><td>Counted in the success summary</td></tr>
+    </tbody>
+  </table>
+
+  <p>After import, a summary message shows how many contacts were imported, skipped as duplicates, or skipped due to missing name.</p>
+
+  <h3>Imported Fields</h3>
+  <p>Name, email, phone, company, address (line 1, line 2, city, state/canton, ZIP, country), notes.</p>
+</div>
+
+<!-- ── 9. Troubleshooting ────────────────────────────────────────────────── -->
+<div class="section page-break" id="s9">
+  <div class="section-header">
+    <div class="section-num">9</div>
+    <h2>Troubleshooting</h2>
+  </div>
+
+  <table>
+    <thead><tr><th>Problem</th><th>Likely cause</th><th>Solution</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>Blank white page</td>
+        <td>PHP error with display_errors off</td>
+        <td>Enable error display: add <code>ini_set('display_errors', 1);</code> temporarily to <code>public/index.php</code> to see the error message.</td>
+      </tr>
+      <tr>
+        <td>Cannot connect to MySQL</td>
+        <td>MySQL service not running</td>
+        <td>Open XAMPP Control Panel and start MySQL. Check credentials in <code>config/database.php</code>.</td>
+      </tr>
+      <tr>
+        <td>"Table not found" error</td>
+        <td>Migration files not run</td>
+        <td>Run all four SQL migration files in order (see Section 3).</td>
+      </tr>
+      <tr>
+        <td>Redirected to /login repeatedly</td>
+        <td>Session not starting</td>
+        <td>Ensure PHP session support is enabled and no output is sent before <code>session_start()</code>. Check for BOM in PHP files.</td>
+      </tr>
+      <tr>
+        <td>Avatar / file uploads not saving</td>
+        <td><code>uploads/</code> not writable</td>
+        <td>Check that <code>uploads/avatars/</code> exists and is writable by the web server user.</td>
+      </tr>
+      <tr>
+        <td>404 on all pages except home</td>
+        <td>Wrong server root or server not started</td>
+        <td>Ensure the PHP server is started with <code>-t ThomasCRM/public</code>. The <code>public/</code> folder must be the document root.</td>
+      </tr>
+      <tr>
+        <td>Language not switching</td>
+        <td>Session locale not updating</td>
+        <td>Go to My Settings, change the language, and save. The change is applied on next page load.</td>
+      </tr>
+      <tr>
+        <td>Import file not accepted</td>
+        <td>Wrong file extension</td>
+        <td>Only <code>.csv</code> and <code>.vcf</code> files are accepted. Ensure the exported file has the correct extension.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ── 10. File & Directory Structure ───────────────────────────────────── -->
+<div class="section" id="s10">
+  <div class="section-header">
+    <div class="section-num">10</div>
+    <h2>File &amp; Directory Structure</h2>
+  </div>
+
+  <pre>ThomasCRM/
+├── <span class="val">public/</span>                  <span class="comment"># Web root — only this folder is publicly accessible</span>
+│   ├── index.php            <span class="comment"># Front controller (entry point)</span>
+│   ├── css/app.css          <span class="comment"># All application styles</span>
+│   ├── js/app.js            <span class="comment"># Application JavaScript</span>
+│   └── assets/              <span class="comment"># Static assets (logo, etc.)</span>
+│
+├── <span class="val">app/</span>
+│   ├── core/                <span class="comment"># Router, Database, Controller, Model, Lang</span>
+│   ├── controllers/         <span class="comment"># All HTTP controllers</span>
+│   ├── models/              <span class="comment"># Contact, Task, Project, User, Setting</span>
+│   ├── modules/             <span class="comment"># Optional modules (invoicing, it_planning)</span>
+│   └── views/               <span class="comment"># PHP view templates</span>
+│       └── shared/          <span class="comment"># layout.php, auth_layout.php, 404.php</span>
+│
+├── <span class="val">config/</span>
+│   └── database.php         <span class="comment"># DB credentials — edit this file</span>
+│
+├── <span class="val">lang/</span>
+│   ├── en/app.php           <span class="comment"># English translations</span>
+│   └── de_CH/app.php        <span class="comment"># Swiss German translations</span>
+│
+├── <span class="val">routes/</span>
+│   ├── web.php              <span class="comment"># All application routes</span>
+│   └── modules/             <span class="comment"># Per-module routes (loaded when enabled)</span>
+│
+├── <span class="val">uploads/</span>                 <span class="comment"># Outside webroot — not directly accessible</span>
+│   ├── avatars/             <span class="comment"># User profile photos</span>
+│   └── logos/               <span class="comment"># Company logos (reserved)</span>
+│
+├── <span class="val">docs/</span>
+│   └── setup_manual.html    <span class="comment"># This document</span>
+│
+├── schema.sql                        <span class="comment"># Migration 1 — core tables</span>
+├── schema_migration_phase2.sql       <span class="comment"># Migration 2 — modules &amp; invoicing</span>
+├── schema_migration_users.sql        <span class="comment"># Migration 3 — users table</span>
+└── schema_migration_settings.sql     <span class="comment"># Migration 4 — settings table</span></pre>
+
+  <div class="box box-info">
+    <span class="box-icon">ℹ</span>
+    <div>The <code>uploads/</code> directory is intentionally placed <strong>outside</strong> the <code>public/</code> web root. Files stored there cannot be accessed directly by a browser URL. They are served through a secure PHP controller that validates file type and prevents path traversal.</div>
+  </div>
+</div>
+
+<!-- ── Footer ─────────────────────────────────────────────────────────────── -->
+<div class="doc-footer">
+  ThomasCRM — Setup Manual v1.0 &nbsp;·&nbsp; June 2026 &nbsp;·&nbsp; Confidential
+</div>
+
+</div><!-- /.body -->
+</div><!-- /.page -->
+</body>
+</html>

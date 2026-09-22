@@ -1,0 +1,2 @@
+ALTER TABLE `documents`
+    ADD COLUMN IF NOT EXISTS `last_editor_id` INT UNSIGNED NULL DEFAULT NULL AFTER `updated_at`;
