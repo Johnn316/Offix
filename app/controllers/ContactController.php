@@ -147,9 +147,13 @@ class ContactController extends Controller
             $errors['name'] = 'Name must be 150 characters or fewer.';
         }
 
+        // Blank emails are stored as NULL and never collide, so only a
+        // supplied address is checked against the unique index.
         if ($data['email'] !== '') {
             if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
                 $errors['email'] = 'Please enter a valid email address.';
+            } elseif ($this->model->emailExists($data['email'], (int) $excludeId)) {
+                $errors['email'] = 'This email address is already in use.';
             }
         }
 

@@ -72,6 +72,19 @@ class Contact extends Model
         $this->execute("DELETE FROM {$this->table} WHERE id = ?", [$id]);
     }
 
+    /**
+     * True when another contact already uses this email.
+     * $excludeId keeps a contact from colliding with itself on update.
+     */
+    public function emailExists(string $email, int $excludeId = 0): bool
+    {
+        $row = $this->queryOne(
+            "SELECT id FROM {$this->table} WHERE email = ? AND id != ?",
+            [$email, $excludeId]
+        );
+        return $row !== null;
+    }
+
     public function tasks(int $contactId): array
     {
         return $this->query(
