@@ -12,7 +12,25 @@ define('APP_PATH',  ROOT_PATH . '/app');
 define('BASE_URL',  '');
 
 // ── 2. Session ────────────────────────────────────────────────────────────────
-if (session_status() === PHP_SESSION_NONE) session_start();
+// Cookie flags are set explicitly rather than inherited from php.ini.
+// 'secure' tracks the actual scheme: forcing it on would stop the cookie being
+// sent over plain HTTP and make local/XAMPP installs impossible to log into.
+// It turns itself on as soon as the app is served over HTTPS.
+$isHttps = (!empty($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) !== 'off')
+    || (int) ($_SERVER['SERVER_PORT'] ?? 0) === 443
+    || strtolower($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https';
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_set_cookie_params([
+        'lifetime' => 0,
+        'path'     => '/',
+        'domain'   => '',
+        'secure'   => $isHttps,
+        'httponly' => true,
+        'samesite' => 'Lax',
+    ]);
+    session_start();
+}
 
 // ── 3. Autoloader ─────────────────────────────────────────────────────────────
 spl_autoload_register(function (string $class): void {

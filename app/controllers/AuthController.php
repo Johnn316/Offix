@@ -33,6 +33,10 @@ class AuthController extends Controller
             $this->redirect('/login');
         }
 
+        // New session ID on privilege change, so a session ID an attacker
+        // planted before login is worthless afterwards (session fixation).
+        session_regenerate_id(true);
+
         // A token handed out before authentication must not stay valid after it.
         csrf_rotate();
 
@@ -50,8 +54,28 @@ class AuthController extends Controller
 
     public function logout(): void
     {
+        // Clear the data, expire the cookie in the browser, then destroy the
+        // server-side session - destroying alone leaves both of the first two.
+        $_SESSION = [];
+
+        if (ini_get('session.use_cookies')) {
+            $p = session_get_cookie_params();
+            setcookie(session_name(), '', [
+                'expires'  => time() - 42000,
+                'path'     => $p['path'],
+                'domain'   => $p['domain'],
+                'secure'   => $p['secure'],
+                'httponly' => $p['httponly'],
+                'samesite' => $p['samesite'] ?? 'Lax',
+            ]);
+        }
+
         session_destroy();
+
+        // Fresh, empty session so the login page can issue a new CSRF token.
         session_start();
+        session_regenerate_id(true);
+
         $this->redirect('/login');
     }
 }
