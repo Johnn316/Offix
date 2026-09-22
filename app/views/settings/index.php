@@ -3,6 +3,7 @@
 </div>
 
 <form method="POST" action="/settings/update">
+<?= csrf_field() ?>
 <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.25rem; align-items:start;">
 
     <!-- Currency selector -->

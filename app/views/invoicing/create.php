@@ -12,6 +12,7 @@ function ov(string $f, array $old, string $def = ''): string {
 </div>
 
 <form method="POST" action="/invoicing/store" novalidate>
+<?= csrf_field() ?>
 <div style="display:grid; grid-template-columns:2fr 1fr; gap:1.25rem; align-items:start;">
 
     <!-- Left: Line Items -->

@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="<?= htmlspecialchars(csrf_token(), ENT_QUOTES) ?>">
     <title><?= htmlspecialchars($pageTitle ?? 'ThomasCRM') ?> — ThomasCRM</title>
     <link rel="stylesheet" href="/css/app.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -118,6 +119,7 @@
         <div class="modal-actions">
             <button class="btn btn-secondary" id="cancel-delete"><?= __('action.cancel') ?></button>
             <form id="delete-form" method="POST" style="display:inline;">
+<?= csrf_field() ?>
                 <button type="submit" class="btn btn-danger">
                     <i class="fa-solid fa-trash"></i> <?= __('delete.yes') ?>
                 </button>

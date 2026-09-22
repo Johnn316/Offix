@@ -16,6 +16,7 @@ function oldVal(string $field, array $old, string $default = ''): string {
 <div class="card">
     <div class="card-body">
         <form method="POST" action="/projects/store" novalidate>
+<?= csrf_field() ?>
 
             <div class="form-grid">
 

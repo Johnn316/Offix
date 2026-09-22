@@ -14,6 +14,7 @@ function pErr(string $f, array $e): string {
         <div class="card-header"><h2><?= __('profile.details') ?></h2></div>
         <div class="card-body">
             <form method="POST" action="/profile/update" enctype="multipart/form-data" novalidate>
+<?= csrf_field() ?>
 
                 <!-- Avatar -->
                 <div style="display:flex; align-items:center; gap:1rem; margin-bottom:1.5rem; padding-bottom:1.25rem; border-bottom:1px solid var(--gray-100);">

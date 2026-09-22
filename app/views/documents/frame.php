@@ -222,8 +222,14 @@ sendHeartbeat();
 // ── 11. Best-effort save on tab close ─────────────────────────────────────────
 window.addEventListener('beforeunload', function() {
     try {
+        // sendBeacon cannot set headers, so the CSRF token travels in the body.
+        var tokenEl = document.querySelector('meta[name="csrf-token"]');
         navigator.sendBeacon('/api/snapshot', new Blob(
-            [JSON.stringify({ doc_id: DOC.id, content: JSON.stringify(quill.getContents()) })],
+            [JSON.stringify({
+                doc_id:  DOC.id,
+                content: JSON.stringify(quill.getContents()),
+                _token:  tokenEl ? tokenEl.getAttribute('content') : ''
+            })],
             { type: 'application/json' }
         ));
     } catch(e) {}

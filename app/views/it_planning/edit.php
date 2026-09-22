@@ -14,6 +14,7 @@ function itErr(string $f, array $e): string {
 <div class="card">
     <div class="card-body">
         <form method="POST" action="/it_planning/<?= $asset['id'] ?>/update" novalidate>
+<?= csrf_field() ?>
 
             <div class="form-section-label">Asset Information</div>
             <div class="form-row">

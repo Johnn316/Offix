@@ -29,6 +29,7 @@
                     </div>
                 </div>
                 <form method="POST" action="/settings/modules/<?= htmlspecialchars($module['name']) ?>/toggle">
+<?= csrf_field() ?>
                     <button type="submit" class="btn <?= $module['enabled'] ? 'btn-danger' : 'btn-success' ?>">
                         <?php if ($module['enabled']): ?>
                             <i class="fa-solid fa-toggle-on"></i> Disable

@@ -52,10 +52,28 @@ if (!$isPublic && empty($_SESSION['user_id'])) {
     exit;
 }
 
-// ── 6. Boot router ────────────────────────────────────────────────────────────
+// ── 6. CSRF guard ─────────────────────────────────────────────────────────────
+// Every state-changing request must carry the session token, supplied as a
+// _token form field, an X-CSRF-Token header, or a _token key in a JSON body.
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !csrf_verify()) {
+    if (str_starts_with($uri, '/api/') || str_contains($_SERVER['HTTP_ACCEPT'] ?? '', 'application/json')) {
+        while (ob_get_level() > 0) ob_end_clean();
+        header('Content-Type: application/json');
+        http_response_code(419);
+        echo json_encode(['error' => 'Invalid or missing CSRF token']);
+        exit;
+    }
+
+    http_response_code(419);
+    $_SESSION['flash_error'] = __('error.session_expired');
+    header('Location: ' . (empty($_SESSION['user_id']) ? '/login' : '/'));
+    exit;
+}
+
+// ── 7. Boot router ────────────────────────────────────────────────────────────
 use App\Core\Router;
 $router = new Router();
 require ROOT_PATH . '/routes/web.php';
 
-// ── 7. Dispatch ───────────────────────────────────────────────────────────────
+// ── 8. Dispatch ───────────────────────────────────────────────────────────────
 $router->dispatch($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);

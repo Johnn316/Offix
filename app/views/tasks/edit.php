@@ -17,6 +17,7 @@ $isRecurring = !empty($task['is_recurring']);
 <div class="card">
     <div class="card-body">
         <form method="POST" action="/tasks/<?= $task['id'] ?>/update" novalidate>
+<?= csrf_field() ?>
 
             <div class="form-section-label">Task Details</div>
             <div class="form-grid">

@@ -50,6 +50,7 @@
                                 </a>
                                 <?php if ($doc['owner_id'] == $_SESSION['user_id'] || ($_SESSION['user_role'] ?? '') === 'admin'): ?>
                                 <form method="POST" action="/documents/<?= $doc['id'] ?>/delete" style="display:inline;">
+<?= csrf_field() ?>
                                     <button type="button" class="btn btn-danger btn-sm"
                                         data-confirm-delete="true"
                                         data-action="/documents/<?= $doc['id'] ?>/delete">

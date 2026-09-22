@@ -56,7 +56,8 @@
             data-action="/documents/<?= $doc['id'] ?>/delete">
             <i class="fa-solid fa-trash"></i>
         </button>
-        <form method="POST" action="/documents/<?= $doc['id'] ?>/delete" id="delete-doc-form" style="display:none;"></form>
+        <form method="POST" action="/documents/<?= $doc['id'] ?>/delete" id="delete-doc-form" style="display:none;">
+<?= csrf_field() ?></form>
         <?php endif; ?>
     </div>
 </div>
@@ -74,6 +75,9 @@
 </div>
 
 <script>
+// CSRF token for this session — required on every state-changing request.
+window.CSRF_TOKEN = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
 // ── Receive messages from the editor iframe ───────────────────────────────────
 window.addEventListener('message', function(e) {
     if (!e.data || !e.data.type) return;
@@ -85,6 +89,9 @@ window.addEventListener('message', function(e) {
         if (e.data.body) {
             opts.headers['Content-Type'] = 'application/json';
             opts.body = e.data.body;
+        }
+        if ((opts.method || 'GET').toUpperCase() !== 'GET') {
+            opts.headers['X-CSRF-Token'] = window.CSRF_TOKEN;
         }
         var frame = document.getElementById('doc-frame');
         fetch(e.data.url, opts)
@@ -170,7 +177,10 @@ window.addEventListener('message', function(e) {
         try {
             await fetch('/documents/' + h1.dataset.id + '/title', {
                 method:  'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-Token': window.CSRF_TOKEN
+                },
                 body:    JSON.stringify({ title })
             });
         } catch(e) {}

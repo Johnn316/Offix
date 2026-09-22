@@ -11,6 +11,7 @@ function uErr(string $f, array $e): string {
 <div class="card" style="max-width:620px;">
     <div class="card-body">
         <form method="POST" action="/users/<?= $user['id'] ?>/update" novalidate>
+<?= csrf_field() ?>
 
             <div class="form-section-label"><?= __('users.account_info') ?></div>
             <div class="form-row">

@@ -47,6 +47,7 @@
                         <td><?= htmlspecialchars($v['created_by_name']) ?></td>
                         <td>
                             <form method="POST" action="/documents/<?= $doc['id'] ?>/restore">
+<?= csrf_field() ?>
                                 <input type="hidden" name="version_id" value="<?= $v['id'] ?>">
                                 <button type="button" class="btn btn-secondary btn-sm"
                                     data-confirm-delete="true"

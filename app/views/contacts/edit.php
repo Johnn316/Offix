@@ -21,6 +21,7 @@ function v(string $field, array $contact): string {
 <div class="card">
     <div class="card-body">
         <form method="POST" action="/contacts/<?= $contact['id'] ?>/update" novalidate>
+<?= csrf_field() ?>
 
             <!-- Basic Info -->
             <div class="form-section-label">Basic Information</div>

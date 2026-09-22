@@ -16,6 +16,7 @@ function err(string $field, array $errors): string {
 <div class="card">
     <div class="card-body">
         <form method="POST" action="/projects/<?= $project['id'] ?>/update" novalidate>
+<?= csrf_field() ?>
 
             <div class="form-grid">
 

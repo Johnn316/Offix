@@ -12,6 +12,7 @@ function err(string $f, array $e): string {
 </div>
 
 <form method="POST" action="/invoicing/<?= $invoice['id'] ?>/update" novalidate>
+<?= csrf_field() ?>
 <div style="display:grid; grid-template-columns:2fr 1fr; gap:1.25rem; align-items:start;">
 
     <div class="card">

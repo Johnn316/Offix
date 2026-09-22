@@ -33,6 +33,9 @@ class AuthController extends Controller
             $this->redirect('/login');
         }
 
+        // A token handed out before authentication must not stay valid after it.
+        csrf_rotate();
+
         $_SESSION['user_id']   = $user['id'];
         $_SESSION['user_name'] = $user['name'];
         $_SESSION['user_role'] = $user['role'];

@@ -10,6 +10,7 @@
         <div class="card-header"><h2><?= __('import.upload_file') ?></h2></div>
         <div class="card-body">
             <form method="POST" action="/contacts/import/run" enctype="multipart/form-data" novalidate>
+<?= csrf_field() ?>
 
                 <div id="drop-zone" onclick="document.getElementById('import-file').click();">
                     <i class="fa-solid fa-file-arrow-up" style="font-size:2rem; color:var(--gray-300); margin-bottom:.6rem;"></i>

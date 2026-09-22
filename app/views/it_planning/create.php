@@ -14,6 +14,7 @@ function itOv(string $f, array $old, string $def = ''): string {
 <div class="card">
     <div class="card-body">
         <form method="POST" action="/it_planning/store" novalidate>
+<?= csrf_field() ?>
 
             <div class="form-section-label">Asset Information</div>
             <div class="form-row">

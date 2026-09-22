@@ -14,6 +14,7 @@ function uOv(string $f, array $old, string $def = ''): string {
 <div class="card" style="max-width:620px;">
     <div class="card-body">
         <form method="POST" action="/users/store" novalidate>
+<?= csrf_field() ?>
 
             <div class="form-section-label"><?= __('users.account_info') ?></div>
             <div class="form-row">
