@@ -14,6 +14,7 @@ class UserController extends Controller
 
     public function __construct()
     {
+        $this->requireAdmin();
         $this->model = new User();
     }
 

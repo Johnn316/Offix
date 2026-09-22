@@ -7,6 +7,11 @@ use App\Core\ModuleManager;
 
 class ModuleController extends Controller
 {
+    public function __construct()
+    {
+        $this->requireAdmin();
+    }
+
     public function index(): void
     {
         $this->render('modules.index', [

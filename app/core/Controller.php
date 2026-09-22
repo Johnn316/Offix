@@ -51,6 +51,45 @@ abstract class Controller
     }
 
     /**
+     * Current user's role, or '' when not logged in.
+     */
+    protected function role(): string
+    {
+        return (string) ($_SESSION['user_role'] ?? '');
+    }
+
+    protected function isAdmin(): bool
+    {
+        return $this->role() === 'admin';
+    }
+
+    /**
+     * Stop the request unless the current user is an admin.
+     * Called from controller constructors so every action is covered —
+     * hiding a nav link is not access control.
+     */
+    protected function requireAdmin(): void
+    {
+        if ($this->isAdmin()) return;
+
+        if ($this->wantsJson()) {
+            $this->json(['error' => 'Forbidden'], 403);
+        }
+        $this->abort(403, __('error.forbidden'));
+    }
+
+    /**
+     * True when the caller expects JSON (API route or explicit Accept header).
+     */
+    protected function wantsJson(): bool
+    {
+        $uri = strtok($_SERVER['REQUEST_URI'] ?? '', '?') ?: '';
+        if (str_starts_with('/' . ltrim($uri, '/'), '/api/')) return true;
+
+        return str_contains($_SERVER['HTTP_ACCEPT'] ?? '', 'application/json');
+    }
+
+    /**
      * Abort with an HTTP status and a simple message.
      */
     protected function abort(int $code = 404, string $message = 'Not Found'): void

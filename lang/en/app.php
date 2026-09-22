@@ -252,4 +252,11 @@ return [
     'flash.created'           => 'Record created successfully.',
     'flash.updated'           => 'Record updated successfully.',
     'flash.deleted'           => 'Record deleted.',
+
+    // Errors
+    'error.forbidden'         => 'You do not have permission to access this page.',
+    'error.not_found'         => 'The page you are looking for could not be found.',
+    'error.bad_request'       => 'Your request could not be processed.',
+    'error.session_expired'   => 'Your session expired. Please try again.',
+    'error.generic'           => 'Something went wrong. Please try again.',
 ];

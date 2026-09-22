@@ -252,4 +252,11 @@ return [
     'flash.created'         => 'Datensatz erfolgreich erstellt.',
     'flash.updated'         => 'Datensatz erfolgreich aktualisiert.',
     'flash.deleted'         => 'Datensatz gelöscht.',
+
+    // Errors
+    'error.forbidden'       => 'Sie haben keine Berechtigung für diese Seite.',
+    'error.not_found'       => 'Die gesuchte Seite konnte nicht gefunden werden.',
+    'error.bad_request'     => 'Ihre Anfrage konnte nicht verarbeitet werden.',
+    'error.session_expired' => 'Ihre Sitzung ist abgelaufen. Bitte versuchen Sie es erneut.',
+    'error.generic'         => 'Es ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.',
 ];
